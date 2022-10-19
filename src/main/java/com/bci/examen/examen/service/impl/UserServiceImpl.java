@@ -22,12 +22,14 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     JwtProvider jwtProvider;
     PasswordEncoder passwordEncoder;
+    RegExValidator regExValidator;
 
     @Autowired
-    public UserServiceImpl (UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
+    public UserServiceImpl (UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder, RegExValidator regExValidator){
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
+        this.regExValidator = regExValidator;
     }
 
     @Override
@@ -37,9 +39,9 @@ public class UserServiceImpl implements UserService {
             throw new UserFoundedException(s);
         });
 
-        if (!RegExValidator.validateEmail(user.getEmail())) throw new EmailValidationException(user.getEmail());
+        if (!regExValidator.validateEmail(user.getEmail())) throw new EmailValidationException(user.getEmail());
 
-        if (!RegExValidator.validatePassword(user.getPasssword())) throw new PasswordException();
+        if (!regExValidator.validatePassword(user.getPasssword())) throw new PasswordException();
 
         UserResponseDto userResponseDto = new UserResponseDto();
 
